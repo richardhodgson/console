@@ -35,6 +35,7 @@ $words  = array(
 	"stop"		=> "",
 	"test"		=> "Just a test.",
 	"tweet"		=> "Send a tweet (not yet done...)",
+	"twitter"	=> "Get tweets from a user",
 	"zoom"		=> "Change font size: minimum is 1.0, maximum is 2.0.",
 	"_auth"		=> "",
 	"_login"	=> "",
@@ -98,6 +99,29 @@ function hello($input){
 #
 function tweet($input){
 	$output = "That would be cool :-)";
+	return $output;
+}
+
+# ==================================================================
+#
+function twitter($input){
+	if($input == ""){
+		$output = "Which user do you want to check?\r<strong>twitter username</strong>";
+	} else {
+		$output = "working on it...";
+
+		$url = "http://twitter.com/status/user_timeline/" . $input . ".json?count=10";
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		$contents = curl_exec ($ch);
+		curl_close ($ch);
+
+		//var_dump($contents);
+
+		$decode = json_decode($contents, true);
+		$output = $decode[0]["text"];
+	}
 	return $output;
 }
 
@@ -299,7 +323,7 @@ function clear($input){
 # ==================================================================
 # check password and either login or reject
 function _auth($input="wrong"){
-	if(md5($input) == '3c709b10a5d47ba33d85337dd9110917'){ // progress
+	if(md5($input) == 'd1133275ee2118be63a577af759fc052'){ // joshua :-)
 
 		$output = '/*function*/'.
 		'that.clear();'.
