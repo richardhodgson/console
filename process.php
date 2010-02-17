@@ -5,7 +5,6 @@ $rawinput = $_POST["input"]; // the command that has just been passed over...
 $inputparts = explode(" ", $rawinput);
 $input = $inputparts[0];
 
-
 # ==================================================================
 # dumb list of usernames
 $users  = array(
@@ -24,6 +23,7 @@ $words  = array(
 	"find"		=> "Find things",
 	"hello"		=> "Yep. Hello.",
 	"help"		=> "Provides overall help, and a list of available commands.",
+//	"lastfm"	=> "Checks the last lastfm track played by a user.",
 	"logout"	=> "Logs you out.",
 	"ls"		=> "",
 	"man"		=> "Provides help on individual commands.",
@@ -35,7 +35,7 @@ $words  = array(
 	"stop"		=> "",
 	"test"		=> "Just a test.",
 	"tweet"		=> "Send a tweet (not yet done...)",
-	"twitter"	=> "Get tweets from a user",
+	"twitter"	=> "Get the last tweet from a user.",
 	"zoom"		=> "Change font size: minimum is 1.0, maximum is 2.0.",
 	"_auth"		=> "",
 	"_login"	=> "",
@@ -103,26 +103,45 @@ function tweet($input){
 }
 
 # ==================================================================
-#
 function twitter($input){
 	if($input == ""){
 		$output = "Which user do you want to check?\r<strong>twitter username</strong>";
 	} else {
-		$output = "working on it...";
-
 		$url = "http://twitter.com/status/user_timeline/" . htmlentities($input) . ".json?count=10";
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		$contents = curl_exec ($ch);
-		curl_close ($ch);
-
-		//var_dump($contents);
-
-		$decode = json_decode($contents, true);
-		$output = $decode[0]["text"];
+		$ns = "text";
+		$output = feeder($url, $ns);
 	}
 	return $output;
+}
+
+# ==================================================================
+function lastfm($input){
+	if($input == ""){
+		$output = "Which user do you want to check?\r<strong>lastfm username</strong>";
+	} else {
+		$url = "http://ws.audioscrobbler.com/2.0/?method=user.getRecentTracks&api_key=79455252ccf334688fc8efe7c5600c3b&user=" . htmlentities($input) . "&format=json";
+//		$ns = ["recenttracks"]["track"][0]["name"];
+//		$output = feeder($url, $ns);
+		$output = "soon...";
+	}
+	return $output;
+}
+
+# ===================================================================
+function feeder($url, $ns){
+
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL, $url);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+	$contents = curl_exec ($ch);
+	curl_close ($ch);
+
+	//var_dump($contents);
+
+	$decode = json_decode($contents, true);
+	$item = $decode[0][$ns];
+
+	return $item;
 }
 
 # ==================================================================
@@ -152,7 +171,21 @@ function _restart($input){
 # ==================================================================
 #
 function find($input){
-	$output = "Nowhere to look, yet.";
+	$googleApiKey = "ABQIAAAABfXxDILyk96j5T1zbuTHIxQT1hIDXS725cbed6gUJzJpaC_7sRRatJmrT6uDc6Xuwpu8kSdbeQ0Rag";
+
+	$url = "http://ajax.googleapis.com/ajax/services/search/web?v=1.0&"
+	    . "q=".$input."&key=".$googleApiKey;
+
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL, $url);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+	curl_setopt($ch, CURLOPT_REFERER, "http://other.thing13.net/console");
+	$body = curl_exec($ch);
+	curl_close($ch);
+	$json = json_decode($body);
+
+	$output = $json->responseData->results[0]->content;
+	$output = str_ireplace ("\t", "\r", $output);
 	return $output;
 }
 
