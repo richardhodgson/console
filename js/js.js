@@ -225,7 +225,7 @@ var thing = function(){
         // =================================================================
         // output the result of the command
         r.output = function(o){
-            $("#outputter").append("<li><pre>" + o + "</pre></li>");
+            $("#outputter").append("<li>" + o + "</li>");
             $("#outputter").append("<li><strong>" + command + this.pre + "</strong><em>" + this.cursor + "</em></li>");
             $("#inputter").val("");
         };
