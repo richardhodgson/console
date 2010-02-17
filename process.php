@@ -1,17 +1,21 @@
 <?
-$rawinput = $_POST["input"];
+$rawinput = $_POST["input"]; // the command that has just been passed over...
 
+// for now, commands are very simple... only first (and sometimes second) chunk of input is processed
 $inputparts = explode(" ", $rawinput);
 $input = $inputparts[0];
 
 
 # ==================================================================
-$users  = array( # note that these are just dumb names at the moment...
+# dumb list of usernames
+$users  = array(
 	"thing",
 	"rich13"
 	);
 
 # ==================================================================
+# list of the commands available, and their description (output in 'man')
+# commands that start with _ are private, and not listed by the help command
 $words  = array(
 	"cd"		=> "",
 	"clear"		=> "Clears the screen.",
@@ -40,6 +44,10 @@ $words  = array(
 	);
 
 # ==================================================================
+# code borrowed from php.net/levenshtein
+# ...guesses the command by looking for closest match
+# needs to be moved into a function...
+
 $shortest = -1;
 
 foreach ($words as $word => $desc) {
@@ -69,6 +77,7 @@ if ($shortest == 0) {
 
 
 # ==================================================================
+#
 function test($input){
 	if($input == ""){
 		$output = "Pick a colour\r<strong>test red</strong>";
@@ -79,18 +88,22 @@ function test($input){
 }
 
 # ==================================================================
+#
 function hello($input){
 	$output = "Er... hello :-)";
 	return $output;
 }
 
 # ==================================================================
+#
 function tweet($input){
 	$output = "That would be cool :-)";
 	return $output;
 }
 
 # ==================================================================
+# this function is fired first...
+# it causes the _login command to be fired next
 function _startup($input){
 	$output = '/*function*/'.
 	'that.clear();'.
@@ -105,6 +118,7 @@ function _startup($input){
 }
 
 # ==================================================================
+# fired on refresh, if login cookie present...
 function _restart($input){
 	$output = '/*function*/ that.clear(); command="";'.
 	'x = "Restarting secure session.";';
@@ -112,12 +126,14 @@ function _restart($input){
 }
 
 # ==================================================================
+#
 function find($input){
 	$output = "Nowhere to look, yet.";
 	return $output;
 }
 
 # ==================================================================
+#
 function ls($input){
 	$output = "ls";
 	return $output;
@@ -281,8 +297,9 @@ function clear($input){
 }
 
 # ==================================================================
-function _auth($input="wrong", $words, $users){
-	if(md5($input) == '3c709b10a5d47ba33d85337dd9110917'){
+# check password and either login or reject
+function _auth($input="wrong"){
+	if(md5($input) == '3c709b10a5d47ba33d85337dd9110917'){ // progress
 
 		$output = '/*function*/'.
 		'that.clear();'.
@@ -310,9 +327,9 @@ function _login($input=false, $words, $users){
 	}
 
 	$output = '/*function*/'.
-	'that.pre = ">> ";'.
+	'that.pre = ">> ";'. # sets the text before the cursor
 	'x = "";'.
-	'command = "_auth ";';
+	'command = "_auth ";'; # checks the password
 
 	return $output;
 }
@@ -331,18 +348,21 @@ function logout(){
 	return $output;
 }
 
+
+
 # ==================================================================
-# do the command...
+# PROCESS THE COMMAND...
+# ==================================================================
 function process($input, $words, $users){
 
 	$parts = explode(" ", $input);
 
-	$command = $parts[0];
+	$command = $parts[0]; # only using the first 2 chunks
 	$thing = $parts[1];
 
 	foreach ($words as $word => $desc) {
 		if(strstr($command, $word) != false){
-			return $word($thing, $words, $users); // this needs to be more powerful
+			return $word($thing, $words, $users); # this needs to be more powerful
 		}
 	}
 }

@@ -1,3 +1,5 @@
+// console
+
 // =================================================================
 var getCookie = function ( cookieName ) {
     if ( ! cookieName ) { return cookieName; }
@@ -15,34 +17,36 @@ var getCookie = function ( cookieName ) {
 
 // =================================================================
 var setCookie = function ( cookieName, value, opts ) {
-	if ( ! cookieName.length ) { return false; }
+    if ( ! cookieName.length ) { return false; }
 
-	var date = new Date();
-	date.setTime(date.getTime()+( (opts.expires || 100 ) *24*60*60*1000));
-	var expires = date.toGMTString();
+    var date = new Date();
+    date.setTime(date.getTime()+( (opts.expires || 100 ) *24*60*60*1000));
+    var expires = date.toGMTString();
 
-	var cookie = cookieName
-	, opts = opts || {}
-	, val = value || ''
-	, domain = opts.domain ? '; domain='+opts.domain : ''
-	, path = opts.path || '/';
+    var cookie = cookieName
+    , opts = opts || {}
+    , val = value || ''
+    , domain = opts.domain ? '; domain='+opts.domain : ''
+    , path = opts.path || '/';
 
-	document.cookie = cookie+ '=' +val+ '; expires=' +expires + domain+ '; path=' +path;
+    document.cookie = cookie+ '=' +val+ '; expires=' +expires + domain+ '; path=' +path;
 
-	return true;
+    return true;
 };
 
 // =================================================================
+// make sure no HTML is output - could be better...
 var clean = function (text) {
     var newtext = text.replace(/&/,"&amp;");
     newtext = newtext.replace(/</,"&lt;");
     newtext = newtext.replace(/>/,"&gt;");
     return(newtext);
-}
+};
 
 // =================================================================
+// the main thing...
 var thing = function(){
-    
+
     var r = {},
     $,
     glow,
@@ -51,40 +55,42 @@ var thing = function(){
     input,
     output = "",
     processUrl = "process.php";
-    
-    var history = new Array();
-    var historyPos = 0;
-    
+
+    var history = new Array(); // for holding history...
+    var historyPos = 0; // current position in history
+
     // =================================================================
-    
+    // check if we're logged in
+
     if(getCookie("console_auth") != "1"){
-        command = "_startup ";
+        command = "_startup "; // not logged in
     } else {
-        command = "_restart ";
+        command = "_restart "; // logged in
     }
-    
+
     // =================================================================
-    
+    // default bits and pieces...
     r.cursor = "|";
     r.pre = "> ";
+
+    // not really there yet...
     r.dirs = {};
-    
     r.pwd = "home";
-    
+
     // =================================================================
-    // notification listeners
+    // listeners
 
     r.cli = function(){
         $("#inputter")[0].focus();
-  
+
         var outputter = $("#outputter");
         var outputters = [];
         var latest = "";
         var that = this;
-         
-        that.process(command);
 
-        g.events.addListener(
+        that.process(command); // fire the processor
+
+        g.events.addListener( // attempt to keep focus on inputter
             "#inputter",
             'blur',
             function (e) {
@@ -100,16 +106,19 @@ var thing = function(){
             }
         );
 
+        // listen to keypresses and simulate typing onto the screen
         g.events.addListener(
             "#inputter",
             'keyup',
             function (e) {
                 e.preventDefault();
-                cleanInput = clean($("#inputter").val());
-                outputters = outputter.get("li");
+                cleanInput = clean($("#inputter").val()); // get input (and prevent dodgy input)
+                outputters = outputter.get("li"); // get current lines of output
 
                 switch(e.keyCode){
-                    
+
+                    // =================================================================
+                    // arrow up/down = history simulation... needs work
                     case 38:
                     if(history[historyPos]){
                         $("#inputter").val( history[historyPos] );
@@ -117,7 +126,7 @@ var thing = function(){
                         if(history.length > 0){ historyPos++; }
                     }
                     break;
-                    
+
                     case 40:                    
                     if(historyPos > 0){ historyPos--; }
                     if(history[historyPos]){
@@ -125,42 +134,47 @@ var thing = function(){
                         $(outputters[(outputters.length - 1)]).html( "<strong>" + command + that.pre + "</strong>" + history[historyPos] + "<em>" + that.cursor + "</em>" );
                     }
                     break;
-                    
+
+                    // =================================================================
+
                     case 13:
-                    if(cleanInput) { // if return key and some input
-                        that.lines();
-                        outputter.get("em").remove();
-                        that.process(command + cleanInput);
-                        command = "";
-                        that.pre = "> ";
-                    } else { // return key alone
-                        
-                        that.lines();
-                        outputter.get("em").remove();
-                        outputter.append("<li><strong>" + command + that.pre + "</strong><em>" + that.cursor + "</em></li>");
+                    if(cleanInput) { // if return key *and* some input
+                        that.lines(); // restrict lines
+                        outputter.get("em").remove(); // remove the cursor
+                        that.process(command + cleanInput); // process
+                        command = ""; // reset
+                        that.pre = "> "; // reset
+                        } else { // return key *alone*
+
+                            that.lines(); // restrict lines
+                            outputter.get("em").remove(); // remove the cursor
+                            outputter.append("<li><strong>" + command + that.pre + "</strong><em>" + that.cursor + "</em></li>"); // add new line
+                        }
+                        break;
+
+                        default:
+                        if(command == "_auth "){ cleanInput = ""; }
+                        $(outputters[(outputters.length - 1)]).html( "<strong>" + command + that.pre + "</strong>" + cleanInput + "<em>" + that.cursor + "</em>" );
+                        break;
                     }
-                    break;
-                    
-                    default:
-                    if(command == "_auth "){ cleanInput = ""; }
-                    $(outputters[(outputters.length - 1)]).html( "<strong>" + command + that.pre + "</strong>" + cleanInput + "<em>" + that.cursor + "</em>" );
-                    break;
-                };
 
-            }        
-        );
+                }        
+            );
 
-        g.events.addListener(
-            "#submitter",
-            'submit',
-            function (e) {
-                e.preventDefault();
-            }
-        );
+            // =================================================================
+            // prevent normal form submission
+            g.events.addListener(
+                "#submitter",
+                'submit',
+                function (e) {
+                    e.preventDefault();
+                }
+            );
 
-    };
+        };
 
         // =================================================================
+        // restrict overall number of lines, to simulate scrolling page
         r.lines = function(){
             var lines = $("#outputter li");
 
@@ -168,36 +182,38 @@ var thing = function(){
                 $(lines[0]).remove();
                 this.lines();
             }
-            
-        }
+
+        };
 
         // =================================================================
+        // pass the input to the back end...
+
         r.process = function(input){
-            
+
             history.push(input);
-            
+
             //console.log(history);
             //var expiry = new Date();
             //expiry.setDate(expiry.getDate()+1);
             //setCookie("console_history",history,{ 'expires': expiry });
-            
+
             var that = this;
             g.net.post(
                 processUrl,
                 {"input": input},
                 {
                     onLoad: function(response) {
-                        
+
                         i = response.text();
-                        console.log(i);
-                        
-                        if(i.match(/\/\*function\*\//)){
-                            eval(i);
-                            that.output(x);                            
+                        //console.log(i);
+
+                        if(i.match(/\/\*function\*\//)){ // detect a new bit of JS code passed back from the back end...
+                            eval(i); // ...and run it
+                            that.output(x); // and get any text to be outputted
                         } else {
-                            that.output(i);
+                            that.output(i); // output the returned text
                         }
-                                                
+
                     },
                     onError: function(response) {
                         //return "Error: " + response.text();
@@ -207,6 +223,7 @@ var thing = function(){
         };
 
         // =================================================================
+        // output the result of the command
         r.output = function(o){
             $("#outputter").append("<li><pre>" + o + "</pre></li>");
             $("#outputter").append("<li><strong>" + command + this.pre + "</strong><em>" + this.cursor + "</em></li>");
@@ -214,6 +231,7 @@ var thing = function(){
         };
 
         // =================================================================
+        // clear the screen
         r.clear = function(){
             $("#outputter").html("");  
         };
