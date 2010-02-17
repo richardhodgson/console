@@ -1,0 +1,21 @@
+@import url("reset.css");
+
+/* ====================================================== */
+
+body { position: relative; margin: 0; background: #000; color: #ddd; font-family: "Andale mono", Monaco, Courier; font-size: 15px; }
+#mask { position: absolute; top: 0; left: 0; background: transparent url(../img/bg.png) repeat 0 0; width: 100%; height: 500px; }
+#inputter, #submitter { position: absolute; left: -9999px; }
+
+#outputter { margin: 1.5em; }
+#outputter li { line-height: 1.6em; /* text-transform: uppercase; */ }
+#outputter li pre { display: inline; }
+#outputter span { display: none; }
+#outputter strong { color: #666; }
+
+@-webkit-keyframes flash {
+	from { opacity: 0; }
+	50% { opacity: 1; }
+	to { opacity: 0; }
+}
+#outputter li em { font-weight: bold; }
+#outputter li em { -webkit-animation-name: flash;-webkit-animation-duration: .76s; -webkit-animation-iteration-count: 1000; }
