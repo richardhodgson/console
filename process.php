@@ -20,10 +20,11 @@ $words  = array(
 	"clear"		=> "Clears the screen.",
 	"clock"		=> "Tells the time. <strong>clock U</strong> gives number of seconds since the Unix Epoch.",
 	"encrypt"	=> "Encrypts words.",
+	"eko"		=> "Repeats input.",
 	"find"		=> "Find things",
 	"hello"		=> "Yep. Hello.",
 	"help"		=> "Provides overall help, and a list of available commands.",
-//	"lastfm"	=> "Checks the last lastfm track played by a user.",
+	"last"		=> "Checks the last lastfm track played by a user.",
 	"logout"	=> "Logs you out.",
 	"ls"		=> "",
 	"man"		=> "Provides help on individual commands.",
@@ -108,21 +109,21 @@ function twitter($input){
 		$output = "Which user do you want to check?\r<strong>twitter username</strong>";
 	} else {
 		$url = "http://twitter.com/status/user_timeline/" . htmlentities($input) . ".json?count=10";
-		$ns = "text";
-		$output = feeder($url, $ns);
+		$data = feeder($url);
+		$output = $data[0]["text"];
+
 	}
 	return $output;
 }
 
 # ==================================================================
-function lastfm($input){
+function last($input){
 	if($input == ""){
 		$output = "Which user do you want to check?\r<strong>lastfm username</strong>";
 	} else {
 		$url = "http://ws.audioscrobbler.com/2.0/?method=user.getRecentTracks&api_key=79455252ccf334688fc8efe7c5600c3b&user=" . htmlentities($input) . "&format=json";
-//		$ns = ["recenttracks"]["track"][0]["name"];
-//		$output = feeder($url, $ns);
-		$output = "soon...";
+		$data = feeder($url);
+		$output = $data["recenttracks"]["track"][0]["name"]." by ".$data["recenttracks"]["track"][0]["artist"]["#text"];
 	}
 	return $output;
 }
@@ -139,9 +140,8 @@ function feeder($url, $ns){
 	//var_dump($contents);
 
 	$decode = json_decode($contents, true);
-	$item = $decode[0][$ns];
 
-	return $item;
+	return $decode;
 }
 
 # ==================================================================
@@ -169,12 +169,12 @@ function _restart($input){
 }
 
 # ==================================================================
-#
+# return results from Google
 function find($input){
 	$googleApiKey = "ABQIAAAABfXxDILyk96j5T1zbuTHIxQT1hIDXS725cbed6gUJzJpaC_7sRRatJmrT6uDc6Xuwpu8kSdbeQ0Rag";
 
 	$url = "http://ajax.googleapis.com/ajax/services/search/web?v=1.0&"
-	    . "q=".$input."&key=".$googleApiKey;
+	    . "q=".urlencode($input)."&key=".$googleApiKey;
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);
@@ -185,7 +185,6 @@ function find($input){
 	$json = json_decode($body);
 
 	$output = $json->responseData->results[0]->content;
-	$output = str_ireplace ("\t", "\r", $output);
 	return $output;
 }
 
@@ -197,13 +196,13 @@ function ls($input){
 }
 
 # ==================================================================
+# basic simulation of cd... should be totally redone
 function cd($input){
 	if($input == ""){
 		$output = '/*function*/ '.
 		'that.pwd = "home";'.
 		'x = that.pwd';
 	} else {
-		//if(in_array($input)){}
 		if($input == "applications" || $input == "pictures"){
 			$output = '/*function*/ '.
 			'that.pwd = "'.$input.'";'.
@@ -281,6 +280,18 @@ function help($input, $words){
 	}
 
 	$output .= '";';
+
+	return $output;
+}
+
+# ==================================================================
+function eko($input){
+
+	if($input == ""){
+		$output = "Quiet, isn't it?";
+	} else {
+		$output = $input;
+	}
 
 	return $output;
 }
@@ -364,7 +375,8 @@ function _auth($input="wrong"){
 		'expiry.setDate(expiry.getDate()+1);'.
 		'setCookie("console_auth","1",{ "expires": expiry });'.
 		'x= "Advanced security clearance <strong>confirmed</strong> \rAccess granted on '.
-		date("r").'\r";';
+		date("r").
+		'\r";';
 		return $output;
 	} else {
 
@@ -409,13 +421,19 @@ function logout(){
 
 # ==================================================================
 # PROCESS THE COMMAND...
+# needs to be cleaner, to be able to handle array input, etc.
 # ==================================================================
 function process($input, $words, $users){
 
 	$parts = explode(" ", $input);
 
-	$command = $parts[0]; # only using the first 2 chunks
+	$command = $parts[0]; # only using the first 2 chunks if there's no ""
 	$thing = $parts[1];
+
+	$inputquoted = explode('"', $input); # use strings inside "" as full string with spaces
+	$quoted = str_replace("\\", "", $inputquoted[1]);
+
+	if($quoted !=""){ $thing = $quoted; }
 
 	foreach ($words as $word => $desc) {
 		if(strstr($command, $word) != false){
