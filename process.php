@@ -95,16 +95,16 @@ function test($input){
 # ...excludes commands which return JS... for the moment...
 function selftest($input){
 	$output = "running all basic commands: \r\r".
-		hello()."\r".
-		tweet()."\r".
-		clock()."\r".
+		hello("test")."\r".
+		tweet("test")."\r".
+		clock("r")."\r".
 		encrypt("test")."\r".
 		eko("test")."\r".
 		find("bbc")."\r".
 		//help()."\r".
 		last("rich13")."\r".
 		////logout()."\r".
-		ls()."\r".
+		ls("test")."\r".
 		//man()."\r".
 		//play()."\r".
 		//pwd()."\r".
@@ -163,7 +163,7 @@ function last($input){
 }
 
 # ===================================================================
-function feeder($url, $ns){
+function feeder($url){
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);
