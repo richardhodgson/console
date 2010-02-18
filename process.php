@@ -32,6 +32,7 @@ $words  = array(
 	"pwd"		=> "",
 	"reverse"	=> "Reverses words.",
 	"rotate"	=> "Returns words with each character rotated 13 positions through the alphabet.",
+	"selftest"	=> "Run tests on all commands.",
 	"scramble"	=> "Randomly sorts letters within a word.",
 	"stop"		=> "",
 	"test"		=> "Just a test.",
@@ -86,6 +87,39 @@ function test($input){
 	} else {
 		$output = '/*function*/ $("body").css("background", "'. $input .'"); alert("testing..."); $("body").css("background", "#000"); x = "test complete";';
 	}
+	return $output;
+}
+
+# ==================================================================
+# run all commands
+# ...excludes commands which return JS... for the moment...
+function selftest($input){
+	$output = "running all basic commands: \r\r".
+		hello()."\r".
+		tweet()."\r".
+		clock()."\r".
+		encrypt("test")."\r".
+		eko("test")."\r".
+		find("bbc")."\r".
+		//help()."\r".
+		last("rich13")."\r".
+		////logout()."\r".
+		ls()."\r".
+		//man()."\r".
+		//play()."\r".
+		//pwd()."\r".
+		reverse("test")."\r".
+		rotate("test")."\r".
+		scramble("test")."\r".
+		//stop()."\r".
+		//test()."\r".
+		twitter("twitter")."\r";
+		//zoom("1")."\r";
+		//_auth()."\r".
+		//_login()."\r".
+		//_restart()."\r".
+		//_startup()."\r".
+
 	return $output;
 }
 
