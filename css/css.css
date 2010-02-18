@@ -8,14 +8,22 @@ body { position: relative; margin: 0; background: #000; color: #ddd; font-family
 
 #outputter { margin: 1.5em; }
 #outputter li { line-height: 1.6em; /* text-transform: uppercase; */ }
-#outputter li pre { display: inline; }
+#outputter li pre {
+display: inline;
+white-space: pre-wrap;       /* css-3 */
+white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+white-space: -pre-wrap;      /* Opera 4-6 */
+white-space: -o-pre-wrap;    /* Opera 7 */
+word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}
+
 #outputter span { display: none; }
 #outputter strong { color: #666; }
 
 @-webkit-keyframes flash {
-	from { opacity: 0; }
-	50% { opacity: 1; }
-	to { opacity: 0; }
+from { opacity: 0; }
+50% { opacity: 1; }
+to { opacity: 0; }
 }
 #outputter li em { font-weight: bold; }
 #outputter li em { -webkit-animation-name: flash;-webkit-animation-duration: .76s; -webkit-animation-iteration-count: 1000; }
