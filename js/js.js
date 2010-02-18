@@ -54,6 +54,7 @@ var thing = function(){
     i,
     input,
     output = "",
+    
     processUrl = "process.php";
 
     var history = new Array(); // for holding history...
@@ -76,7 +77,7 @@ var thing = function(){
     // not really there yet...
     r.dirs = {};
     r.pwd = "home";
-
+    
     // =================================================================
     // listeners
 
@@ -190,7 +191,9 @@ var thing = function(){
 
         r.process = function(input){
 
-            history.push(input);
+            if(!input.match(/_/)){
+                history.push(input);
+            }
 
             //console.log(history);
             //var expiry = new Date();
@@ -225,7 +228,7 @@ var thing = function(){
         // =================================================================
         // output the result of the command
         r.output = function(o){
-            $("#outputter").append("<li>" + o + "</li>");
+            $("#outputter").append("<li><pre>" + o + "</pre></li>");
             $("#outputter").append("<li><strong>" + command + this.pre + "</strong><em>" + this.cursor + "</em></li>");
             $("#inputter").val("");
         };
