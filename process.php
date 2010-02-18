@@ -16,27 +16,29 @@ $users  = array(
 # list of the commands available, and their description (output in 'man')
 # commands that start with _ are private, and not listed by the help command
 $words  = array(
-	"cd"		=> "",
+	//"cd"		=> "",
 	"clear"		=> "Clears the screen.",
 	"clock"		=> "Tells the time. <strong>clock U</strong> gives number of seconds since the Unix Epoch.",
 	"encrypt"	=> "Encrypts words.",
 	"eko"		=> "Repeats input.",
+	"feel"		=> "Find a sentence from the web with a given feeling",
 	"find"		=> "Find things",
 	"hello"		=> "Yep. Hello.",
 	"help"		=> "Provides overall help, and a list of available commands.",
 	"last"		=> "Checks the last lastfm track played by a user.",
 	"logout"	=> "Logs you out.",
-	"ls"		=> "",
+	//"ls"		=> "",
 	"man"		=> "Provides help on individual commands.",
-	"play"		=> "",
-	"pwd"		=> "",
+	//"play"		=> "",
+	//"pwd"		=> "",
 	"reverse"	=> "Reverses words.",
 	"rotate"	=> "Returns words with each character rotated 13 positions through the alphabet.",
 	"selftest"	=> "Run tests on all commands.",
 	"scramble"	=> "Randomly sorts letters within a word.",
-	"stop"		=> "",
+	//"stop"		=> "",
 	"test"		=> "Just a test.",
 	"tweet"		=> "Send a tweet (not yet done...)",
+	"twhois"	=> "Find out who a Twitter user really is",
 	"twitter"	=> "Get the last tweet from a user.",
 	"zoom"		=> "Change font size: minimum is 1.0, maximum is 2.0.",
 	"_auth"		=> "",
@@ -101,24 +103,11 @@ function selftest($input){
 		encrypt("test")."\r".
 		eko("test")."\r".
 		find("bbc")."\r".
-		//help()."\r".
 		last("rich13")."\r".
-		////logout()."\r".
-		ls("test")."\r".
-		//man()."\r".
-		//play()."\r".
-		//pwd()."\r".
 		reverse("test")."\r".
 		rotate("test")."\r".
 		scramble("test")."\r".
-		//stop()."\r".
-		//test()."\r".
 		twitter("twitter")."\r";
-		//zoom("1")."\r";
-		//_auth()."\r".
-		//_login()."\r".
-		//_restart()."\r".
-		//_startup()."\r".
 
 	return $output;
 }
@@ -126,14 +115,14 @@ function selftest($input){
 # ==================================================================
 #
 function hello($input){
-	$output = "Er... hello :-)";
+	$output = "Er... hello..." . $input . " :-)";
 	return $output;
 }
 
 # ==================================================================
 #
 function tweet($input){
-	$output = "That would be cool :-)";
+	$output = "This would tweet '" . $input . "', if we had OAuth stuff...";
 	return $output;
 }
 
@@ -143,8 +132,50 @@ function twitter($input){
 		$output = "Which user do you want to check?\r<strong>twitter username</strong>";
 	} else {
 		$url = "http://twitter.com/status/user_timeline/" . htmlentities($input) . ".json?count=10";
-		$data = feeder($url);
+		$rawdata = feeder($url);
+		$data = json_decode($rawdata, true);
 		$output = $data[0]["text"];
+
+	}
+	return $output;
+}
+
+# ==================================================================
+function twhois($input){
+	if($input == ""){
+		$output = "Which user do you want to check?\r<strong>twhois username</strong>";
+	} else {
+		$url = "http://twitter.com/status/user_timeline/" . htmlentities($input) . ".json?count=10";
+
+		$rawdata = feeder($url);
+		$data = json_decode($rawdata, true);
+
+		if(isset($data[0]["user"]["id"])){
+
+			$output = "";
+
+			if($input == $data[0]["user"]["name"]){
+				$output .= "<strong>" .$input . "</strong> hasn't provided a real name.\r";
+			} else {
+				$output .= "<strong>" .$input . "</strong> is really <strong>" . $data[0]["user"]["name"] . "</strong>... ";
+			}
+
+			//.$data[0]["user"]["description"].".\r";
+
+			$output .= ", Twitter user number <strong>" . $data[0]["user"]["id"] . "</strong>, and have been a Twitter user for <strong>" . time_since(strtotime($data[0]["user"]["created_at"])) . "</strong>.\r";
+			$output .= "They have <strong>" . $data[0]["user"]["friends_count"]  . "</strong> friends, and <strong>";
+			$output .= $data[0]["user"]["followers_count"] . "</strong> followers.\r";
+			$output .= "They have tweeted <strong>" . $data[0]["user"]["statuses_count"] . "</strong> times.\r";
+
+			if(isset($data[0]["user"]["location"])){
+				$output .= "They are based in <strong>" . $data[0]["user"]["location"] ."</strong>.";
+			} else {
+				$output .= "Not sure where they are in the world.";
+			}
+
+		} else {
+			$output = "Dunno, sorry.";
+		}
 
 	}
 	return $output;
@@ -153,14 +184,30 @@ function twitter($input){
 # ==================================================================
 function last($input){
 	if($input == ""){
-		$output = "Which user do you want to check?\r<strong>lastfm username</strong>";
+		$output = "Which user do you want to check?\r<strong>last username</strong>";
 	} else {
 		$url = "http://ws.audioscrobbler.com/2.0/?method=user.getRecentTracks&api_key=79455252ccf334688fc8efe7c5600c3b&user=" . htmlentities($input) . "&format=json";
-		$data = feeder($url);
+		$rawdata = feeder($url);
+		$data = json_decode($rawdata, true);
+
 		$output = $data["recenttracks"]["track"][0]["name"]." by ".$data["recenttracks"]["track"][0]["artist"]["#text"];
 	}
 	return $output;
 }
+
+# ==================================================================
+function feel($input){
+	if($input == ""){
+		$output = "What feeling are you looking for?\r<strong>feel hungry</strong>";
+	} else {
+		$url = "http://api.wefeelfine.org:8080/ShowFeelings?display=json&returnfields=sentence&postdate=".date("Y-m-d")."&limit=1&feeling=" . htmlentities($input);
+		$data = feeder($url);
+		$output = strip_tags($data);
+	}
+	return $output;
+}
+
+
 
 # ===================================================================
 function feeder($url){
@@ -173,9 +220,7 @@ function feeder($url){
 
 	//var_dump($contents);
 
-	$decode = json_decode($contents, true);
-
-	return $decode;
+	return $contents;
 }
 
 # ==================================================================
@@ -198,27 +243,33 @@ function _startup($input){
 # fired on refresh, if login cookie present...
 function _restart($input){
 	$output = '/*function*/ that.clear(); command="";'.
-	'x = "Restarting secure session.";';
+	'x = "";';
 	return $output;
 }
 
 # ==================================================================
 # return results from Google
 function find($input){
-	$googleApiKey = "ABQIAAAABfXxDILyk96j5T1zbuTHIxQT1hIDXS725cbed6gUJzJpaC_7sRRatJmrT6uDc6Xuwpu8kSdbeQ0Rag";
 
-	$url = "http://ajax.googleapis.com/ajax/services/search/web?v=1.0&"
-	    . "q=".urlencode($input)."&key=".$googleApiKey;
+	if($input == ""){
+		$output = "Find what?";
+	} else {
 
-	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_URL, $url);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-	curl_setopt($ch, CURLOPT_REFERER, "http://other.thing13.net/console");
-	$body = curl_exec($ch);
-	curl_close($ch);
-	$json = json_decode($body);
+		$googleApiKey = "ABQIAAAABfXxDILyk96j5T1zbuTHIxQT1hIDXS725cbed6gUJzJpaC_7sRRatJmrT6uDc6Xuwpu8kSdbeQ0Rag";
 
-	$output = $json->responseData->results[0]->content;
+		$url = "http://ajax.googleapis.com/ajax/services/search/web?v=1.0&"
+		   . "q=".urlencode($input)."&key=".$googleApiKey;
+
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL, $url);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+			curl_setopt($ch, CURLOPT_REFERER, "http://other.thing13.net/console");
+			$body = curl_exec($ch);
+			curl_close($ch);
+			$json = json_decode($body);
+			$output = $json->responseData->results[0]->content;
+
+	}
 	return $output;
 }
 
@@ -475,5 +526,63 @@ function process($input, $words, $users){
 		}
 	}
 }
+
+# =================================================================
+function time_since($older_date, $newer_date = false)
+{
+	// array of time period chunks
+	$chunks = array(
+		array(60 * 60 * 24 * 365 , 'year'),
+		array(60 * 60 * 24 * 30 , 'month'),
+		array(60 * 60 * 24 * 7, 'week'),
+		array(60 * 60 * 24 , 'day'),
+		array(60 * 60 , 'hour'),
+		array(60 , 'minute'),
+		);
+
+	// $newer_date will equal false if we want to know the time elapsed between a date and the current time
+	// $newer_date will have a value if we want to work out time elapsed between two known dates
+	$newer_date = ($newer_date == false) ? time() : $newer_date;
+
+	// difference in seconds
+	$since = $newer_date - $older_date;
+
+	// we only want to output two chunks of time here, eg:
+	// x years, xx months
+	// x days, xx hours
+	// so there's only two bits of calculation below:
+
+	// step one: the first chunk
+	for ($i = 0, $j = count($chunks); $i < $j; $i++)
+	{
+		$seconds = $chunks[$i][0];
+		$name = $chunks[$i][1];
+
+		// finding the biggest chunk (if the chunk fits, break)
+		if (($count = floor($since / $seconds)) != 0)
+		{
+			break;
+		}
+	}
+
+	// set output var
+	$output = ($count == 1) ? '1 '.$name : "$count {$name}s";
+
+	// step two: the second chunk
+	if ($i + 1 < $j)
+	{
+		$seconds2 = $chunks[$i + 1][0];
+		$name2 = $chunks[$i + 1][1];
+
+		if (($count2 = floor(($since - ($seconds * $count)) / $seconds2)) != 0)
+		{
+			// add to output var
+			$output .= ($count2 == 1) ? ', 1 '.$name2 : ", $count2 {$name2}s";
+		}
+	}
+
+	return $output;
+}
+
 
 ?>
