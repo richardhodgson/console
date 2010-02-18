@@ -157,12 +157,12 @@ function twhois($input){
 			if($input == $data[0]["user"]["name"]){
 				$output .= "<strong>" .$input . "</strong> hasn't provided a real name.\r";
 			} else {
-				$output .= "<strong>" .$input . "</strong> is really <strong>" . $data[0]["user"]["name"] . "</strong>... ";
+				$output .= "<strong>" .$input . "</strong> is really <strong>" . $data[0]["user"]["name"] . "</strong>. \r";
 			}
 
 			//.$data[0]["user"]["description"].".\r";
 
-			$output .= ", Twitter user number <strong>" . $data[0]["user"]["id"] . "</strong>, and have been a Twitter user for <strong>" . time_since(strtotime($data[0]["user"]["created_at"])) . "</strong>.\r";
+			$output .= "They are Twitter user number <strong>" . $data[0]["user"]["id"] . "</strong>, and have been a Twitter user for <strong>" . time_since(strtotime($data[0]["user"]["created_at"])) . "</strong>.\r";
 			$output .= "They have <strong>" . $data[0]["user"]["friends_count"]  . "</strong> friends, and <strong>";
 			$output .= $data[0]["user"]["followers_count"] . "</strong> followers.\r";
 			$output .= "They have tweeted <strong>" . $data[0]["user"]["statuses_count"] . "</strong> times.\r";
