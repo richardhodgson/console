@@ -10,6 +10,8 @@ $rawinput = $_POST["input"]; // the command that has just been passed over...
 $inputparts = explode(" ", $rawinput);
 $input = $inputparts[0];
 
+if( is_numeric($input) ){ echo basic($rawinput); exit(); }
+
 # ==================================================================
 # dumb list of usernames
 $users  = array(
@@ -74,6 +76,15 @@ function process($input, $words, $users){
 			return $word($thing, $words, $users); # this needs to be more powerful
 		}
 	}
+}
+
+
+function basic($input){
+	$parts = explode(" ", $input);
+	$number = $parts[0];
+	$line = str_replace($number." ", "", $input);
+
+	return _addline($number, $line);
 }
 
 ?>

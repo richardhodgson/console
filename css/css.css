@@ -3,6 +3,18 @@
 /* ====================================================== */
 
 body { position: relative; margin: 0; background: #000; color: #ddd; font-family: "Andale mono", Monaco, Courier; font-size: 15px; }
+
+body.xray { background: #aaa; color: #666; }
+body.xray #mask { display: none; }
+body.xray #outputter { display: block; }
+body.xray #inputter,
+body.xray #submitter { position: static;  margin: 1em; }
+
+body.insane { background: purple; color: lime; font-family: "comic sans ms"; }
+body.insane #outputter em { color: aqua; }
+body.insane #outputter strong { color: yellow; }
+body.insane #mask { display: none; }
+
 #mask { position: absolute; top: 0; left: 0; background: transparent url(../img/bg.png) repeat 0 0; width: 100%; height: 500px; }
 #inputter, #submitter { position: absolute; left: -9999px; }
 

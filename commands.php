@@ -3,36 +3,65 @@
 # list of the commands available, and their description (output in 'man')
 # commands that start with _ are private, and not listed by the help command
 $words  = array(
+	"clear"		=> "Clears the screen."
+	,"clock"		=> "Tells the time. <strong>clock U</strong> gives number of seconds since the Unix Epoch."
+	,"eko"		=> "Repeats input."
+	,"encrypt"	=> "Encrypts words."
+	,"feel"		=> "Uses We Feel Fine (wefeelfine.org) to find a sentence from today that includes a given feeling."
+	,"find"		=> "Find things"
+	,"hello"		=> "Yep. Hello."
+	,"help"		=> "Provides overall help, and a list of available commands."
+	,"last"		=> "Checks the last lastfm track played by a user."
+	,"logout"	=> "Logs you out."
+	,"lyst"		=> "Lists a programme."
+	,"man"		=> "Provides help on individual commands."
+	,"mode"		=> "Changes display mode."
+	,"reverse"	=> "Reverses words."
+	,"rotate"	=> "Returns words with each character rotated 13 positions through the alphabet."
+	,"run"		=> "Runs programmes."
+	,"scramble"	=> "Randomly sorts letters within a word."
+	,"selftest"	=> "Run tests on all commands."
+	,"test"		=> "Just a test."
+	,"tweet"		=> "Send a tweet (not yet done...)"
+	,"twhois"	=> "Find out who a Twitter user really is"
+	,"twitter"	=> "Get the last tweet from a user."
+	,"zoom"		=> "Change font size: minimum is 1.0, maximum is 2.0."
+	,"_auth"	=> ""
+	,"_login"	=> ""
+	,"_restart"	=> ""
+	,"_startup"	=> ""
 	//"cd"		=> "",
-	"clear"		=> "Clears the screen.",
-	"clock"		=> "Tells the time. <strong>clock U</strong> gives number of seconds since the Unix Epoch.",
-	"encrypt"	=> "Encrypts words.",
-	"eko"		=> "Repeats input.",
-	"feel"		=> "Uses wefeelfine.org to find a sentence from today that includes a given feeling.",
-	"find"		=> "Find things",
-	"hello"		=> "Yep. Hello.",
-	"help"		=> "Provides overall help, and a list of available commands.",
-	"last"		=> "Checks the last lastfm track played by a user.",
-	"logout"	=> "Logs you out.",
 	//"ls"		=> "",
-	"man"		=> "Provides help on individual commands.",
 	//"play"		=> "",
 	//"pwd"		=> "",
-	"reverse"	=> "Reverses words.",
-	"rotate"	=> "Returns words with each character rotated 13 positions through the alphabet.",
-	"selftest"	=> "Run tests on all commands.",
-	"scramble"	=> "Randomly sorts letters within a word.",
 	//"stop"		=> "",
-	"test"		=> "Just a test.",
-	"tweet"		=> "Send a tweet (not yet done...)",
-	"twhois"	=> "Find out who a Twitter user really is",
-	"twitter"	=> "Get the last tweet from a user.",
-	"zoom"		=> "Change font size: minimum is 1.0, maximum is 2.0.",
-	"_auth"		=> "",
-	"_login"	=> "",
-	"_restart"	=> "",
-	"_startup"	=> ""
+
 	);
+
+# ==================================================================
+# BASIC-like programming...
+
+function _addline($number, $line){
+	$output = '/*function*/'.
+	'that.prog["'.$number.'"] = "'.$line.'";'.
+	'x = "";';
+	return $output;
+}
+# ==================================================================
+function run(){
+	$output = '/*function*/'.
+	'that.run();'.
+	'x = "";';
+	return $output;
+}
+
+# ==================================================================
+function lyst(){
+	$output = '/*function*/'.
+	'that.lyst();'.
+	'x = "";';
+	return $output;
+}
 
 # ==================================================================
 # tests JS features
@@ -197,7 +226,7 @@ function _startup($input){
 	'Welcome\r'.
 	date("r").
 	'\r'.
-	'Console, version <strong>0.0.1</strong>\r'.
+	'Console, version <strong>0.0.2</strong> experimental\r'.
 	'";';
 	return $output;
 }
@@ -312,6 +341,34 @@ function man($input, $words){
 	}
 
 	$output .= '";';
+	return $output;
+}
+
+# ==================================================================
+function mode($input){
+
+	$modes = array(
+		"xray"
+		,"normal"
+		,"insane"
+		);
+
+	$modelist = "";
+	foreach($modes as $mode){
+		$modelist .= "<strong>".$mode."</strong> ";
+	}
+
+	if (in_array($input, $modes)) {
+		$output = '/*function*/';
+		$output .= 'that.mode("'.$input.'");';
+		$output .= 'x = "Now in '.$input.' mode.";';
+	} else {
+
+		$output = '/*function*/';
+		$output .= 'that.mode("'.$input.'");';
+		$output .= 'x = "Which mode?\r'.$modelist.'";';
+	}
+
 	return $output;
 }
 

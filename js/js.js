@@ -54,8 +54,9 @@ var thing = function(){
     i,
     input,
     output = "",
-    
     processUrl = "process.php";
+
+    r.prog = new Array();
 
     var history = new Array(); // for holding history...
     var historyPos = 0; // current position in history
@@ -141,7 +142,7 @@ var thing = function(){
                     case 13:
                     if(cleanInput) { // if return key *and* some input
                         that.lines(); // restrict lines
-                        outputter.get("em").remove(); // remove the cursor
+                        
                         that.process(command + cleanInput); // process
                         command = ""; // reset
                         that.pre = "> "; // reset
@@ -189,7 +190,7 @@ var thing = function(){
         // =================================================================
         // pass the input to the back end...
 
-        r.process = function(input){
+        r.process = function(input, mode){
 
             if(!input.match(/_/)){
                 history.push(input);
@@ -212,9 +213,17 @@ var thing = function(){
 
                         if(i.match(/\/\*function\*\//)){ // detect a new bit of JS code passed back from the back end...
                             eval(i); // ...and run it
-                            that.output(x); // and get any text to be outputted
+                            if(mode == "single"){
+                                that.singleoutput(x); // running output
+                            } else {
+                                that.output(x); // normal output
+                            }
                         } else {
-                            that.output(i); // output the returned text
+                            if(mode == "single"){
+                                that.singleoutput(i); // running output
+                            } else {
+                                that.output(i); // normal output
+                            }
                         }
 
                     },
@@ -228,9 +237,25 @@ var thing = function(){
         // =================================================================
         // output the result of the command
         r.output = function(o){
+            $("#outputter").get("em").remove(); // remove the cursor
             $("#outputter").append("<li><pre>" + o + "</pre></li>");
             $("#outputter").append("<li><strong>" + command + this.pre + "</strong><em>" + this.cursor + "</em></li>");
             $("#inputter").val("");
+        };
+
+        // =================================================================
+        // output the result of the command
+        r.singleoutput = function(o){
+            $("#outputter").get("em").remove(); // remove the cursor
+            $("#outputter").append("<li><pre>" + o + "</pre></li>");
+            //$("#outputter").append("<li><strong>" + command + this.pre + "</strong><em>" + this.cursor + "</em></li>");
+            $("#inputter").val("");
+        };
+
+        // =================================================================
+        // set page display mode
+        r.mode = function(mode){
+            $("body").attr("class", mode);  
         };
 
         // =================================================================
@@ -238,6 +263,56 @@ var thing = function(){
         r.clear = function(){
             $("#outputter").html("");  
         };
+
+        // =================================================================
+        function sortNumber(a,b)
+        {
+        return a - b;
+        }
+
+        // =================================================================
+        function cleanArray(actual){
+          var newArray = new Array();
+          for(var i = 0; i<actual.length; i++){
+              if (actual[i]){
+                newArray.push(actual[i]);
+            }
+          }
+          return newArray;
+        }
+        
+        // =================================================================
+        //r.progsort = function(){
+        //    console.log(this.prog);
+        //};
+
+        // =================================================================
+        // runs programmes
+        r.run = function(){
+
+            if(this.prog.length == 0){ this.output("Nothing to run."); }
+
+            this.prog = cleanArray(this.prog);
+
+            for(var i = 0; i<this.prog.length; i++){
+                if((i+1) == this.prog.length) {
+                    this.process(this.prog[i]);
+                } else {
+                    this.process(this.prog[i], "single");                    
+                }
+            }
+        };
+        
+        // =================================================================
+        // lists programmes
+        r.lyst = function(){
+            this.prog = cleanArray(this.prog);
+            
+            for(var i = 0; i<this.prog.length; i++){
+                  this.singleoutput(i + " " + this.prog[i]);
+              }
+        };
+        
 
         // =================================================================
         // get going
