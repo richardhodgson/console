@@ -1,0 +1,6 @@
+K 13
+svn:externals
+V 64
+EasyRdf http://easyrdf.googlecode.com/svn/php/trunk/lib/EasyRdf
+
+END

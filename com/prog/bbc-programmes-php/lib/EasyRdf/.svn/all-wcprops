@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 39
+/svn/!svn/ver/281/php/trunk/lib/EasyRdf
+END
+Namespace.php
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/!svn/ver/267/php/trunk/lib/EasyRdf/Namespace.php
+END
+Exception.php
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/!svn/ver/194/php/trunk/lib/EasyRdf/Exception.php
+END
+Utils.php
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/!svn/ver/216/php/trunk/lib/EasyRdf/Utils.php
+END
+Graph.php
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/!svn/ver/268/php/trunk/lib/EasyRdf/Graph.php
+END
+TypeMapper.php
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/!svn/ver/178/php/trunk/lib/EasyRdf/TypeMapper.php
+END
+Resource.php
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/!svn/ver/255/php/trunk/lib/EasyRdf/Resource.php
+END

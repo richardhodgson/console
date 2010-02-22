@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/!svn/ver/281/php/trunk/lib/EasyRdf/Serialiser
+END
+Rapper.php
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/!svn/ver/281/php/trunk/lib/EasyRdf/Serialiser/Rapper.php
+END
+Arc.php
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/!svn/ver/281/php/trunk/lib/EasyRdf/Serialiser/Arc.php
+END
+Builtin.php
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/!svn/ver/281/php/trunk/lib/EasyRdf/Serialiser/Builtin.php
+END

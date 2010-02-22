@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 44
+/svn/!svn/ver/245/php/trunk/lib/EasyRdf/Http
+END
+Client.php
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/!svn/ver/179/php/trunk/lib/EasyRdf/Http/Client.php
+END
+Response.php
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/!svn/ver/245/php/trunk/lib/EasyRdf/Http/Response.php
+END

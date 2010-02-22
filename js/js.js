@@ -1,5 +1,6 @@
 // console
 
+
 // =================================================================
 var getCookie = function ( cookieName ) {
     if ( ! cookieName ) { return cookieName; }
@@ -146,6 +147,7 @@ var thing = function(){
                         that.process(command + cleanInput); // process
                         command = ""; // reset
                         that.pre = "> "; // reset
+                        
                         } else { // return key *alone*
 
                             that.lines(); // restrict lines
@@ -193,14 +195,9 @@ var thing = function(){
         r.process = function(input, mode){
 
             if(!input.match(/_/)){
-                history.push(input);
+                history.unshift(input);
             }
-
-            //console.log(history);
-            //var expiry = new Date();
-            //expiry.setDate(expiry.getDate()+1);
-            //setCookie("console_history",history,{ 'expires': expiry });
-
+            
             var that = this;
             g.net.post(
                 processUrl,
@@ -209,21 +206,25 @@ var thing = function(){
                     onLoad: function(response) {
 
                         i = response.text();
-                        //console.log(i);
 
                         if(i.match(/\/\*function\*\//)){ // detect a new bit of JS code passed back from the back end...
+                            
                             eval(i); // ...and run it
+                            
                             if(mode == "single"){
                                 that.singleoutput(x); // running output
                             } else {
                                 that.output(x); // normal output
                             }
+                        
                         } else {
+                            
                             if(mode == "single"){
                                 that.singleoutput(i); // running output
                             } else {
                                 that.output(i); // normal output
                             }
+                            
                         }
 
                     },
@@ -249,7 +250,7 @@ var thing = function(){
             $("#outputter").get("em").remove(); // remove the cursor
             $("#outputter").append("<li><pre>" + o + "</pre></li>");
             //$("#outputter").append("<li><strong>" + command + this.pre + "</strong><em>" + this.cursor + "</em></li>");
-            $("#inputter").val("");
+            //$("#inputter").val("");
         };
 
         // =================================================================
@@ -305,7 +306,7 @@ var thing = function(){
         
         // =================================================================
         // lists programmes
-        r.lyst = function(){
+        r.list = function(){
             this.prog = cleanArray(this.prog);
             
             for(var i = 0; i<this.prog.length; i++){

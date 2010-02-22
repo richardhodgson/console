@@ -1,4 +1,52 @@
 <?
+
+# ==================================================================
+# code borrowed from php.net/levenshtein
+# ...guesses the command by looking for closest match
+# needs to be moved into a function...
+function match($input, $commands){
+
+	$shortest = -1;
+
+	foreach ($commands as $command => $desc) {
+		$lev = levenshtein($input, $command);
+		if ($lev == 0) { // match
+			$closest = $command;
+			$shortest = 0;
+			break;
+		}
+		if ($lev <= $shortest || $shortest < 0) {
+			$closest  = $command;
+			$shortest = $lev;
+		}
+	}
+	return array($shortest, $closest);
+}
+
+# =================================================================
+function import($folder){
+
+	$handle = opendir($folder) or die ("Can't open $folder: $php_errormsg");
+	while ($item = readdir($handle))
+
+	if ( !strstr($item, '.trash') &&
+		$item != ".DS_Store" &&
+		$item != "." &&
+		$item != ".."
+	){
+
+		$commands[$item] = "c_".$item;
+	}
+
+	closedir($handle);
+
+	foreach($commands as $command => $function){
+		include($folder."/".$command."/".$command.".php");
+	}
+
+	return $commands;
+}
+
 # =================================================================
 function time_since($older_date, $newer_date = false)
 {

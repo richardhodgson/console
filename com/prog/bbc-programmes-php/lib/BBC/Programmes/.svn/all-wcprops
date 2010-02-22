@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 40
+/svn/!svn/ver/6/trunk/lib/BBC/Programmes
+END
+Programme.php
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/!svn/ver/6/trunk/lib/BBC/Programmes/Programme.php
+END
+Base.php
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/!svn/ver/6/trunk/lib/BBC/Programmes/Base.php
+END
+Series.php
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/!svn/ver/3/trunk/lib/BBC/Programmes/Series.php
+END
+Service.php
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/!svn/ver/6/trunk/lib/BBC/Programmes/Service.php
+END
+Broadcast.php
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/!svn/ver/6/trunk/lib/BBC/Programmes/Broadcast.php
+END
+Version.php
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/!svn/ver/6/trunk/lib/BBC/Programmes/Version.php
+END
+Brand.php
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/!svn/ver/3/trunk/lib/BBC/Programmes/Brand.php
+END
+Clip.php
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/!svn/ver/5/trunk/lib/BBC/Programmes/Clip.php
+END
+Episode.php
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/!svn/ver/6/trunk/lib/BBC/Programmes/Episode.php
+END

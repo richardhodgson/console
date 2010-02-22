@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/svn/!svn/ver/281/php/trunk/lib/EasyRdf/Parser
+END
+Rapper.php
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/!svn/ver/268/php/trunk/lib/EasyRdf/Parser/Rapper.php
+END
+Redland.php
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/!svn/ver/268/php/trunk/lib/EasyRdf/Parser/Redland.php
+END
+Arc.php
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/!svn/ver/268/php/trunk/lib/EasyRdf/Parser/Arc.php
+END
+Builtin.php
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/!svn/ver/281/php/trunk/lib/EasyRdf/Parser/Builtin.php
+END
