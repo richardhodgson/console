@@ -1,6 +1,29 @@
 <?
 
+class Console {
+    public function __construct () {
+        spl_autoload_register(array($this, 'autoload'));
+    }
+    /**
+     * Allows auto including of classes by making reference to them.
+     * @param $className
+     * @return void
+     */
+    public function autoload ($className) {
+        $path = str_replace('_', '/', $className);
+        require_once($path . '.php');
+    }
+}
+
+new Console();
+
+
 $rawinput = $_POST["input"]; // the command that has just been passed over...
+
+if (! isset($rawinput)) {
+    $rawinput = $_GET['input'];
+}
+
 
 if(!isset($rawinput)){ die("*"); } // prevent direct access to this file
 
@@ -79,4 +102,3 @@ $users  = array(
 	"rich13"
 );
 
-?>
